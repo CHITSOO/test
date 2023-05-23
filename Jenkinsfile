@@ -1,7 +1,7 @@
 def mainDir="."
 def ecrLoginHelper="docker-credential-ecr-login"
 def region="ap-northeast-2"
-def ecrUrl="011053791574.dkr.ecr.ap-northeast-2.amazonaws.com/test"
+def ecrUrl="011053791574.dkr.ecr.ap-northeast-2.amazonaws.com"
 def repository="test"
 def deployHost="3.35.90.44"
 
@@ -25,7 +25,8 @@ pipeline {
                     ecrLogin()
                     sh """
                         curl -O https://amazon-ecr-credential-helper-releases.s3.us-east-2.amazonaws.com/0.4.0/linux-amd64/${ecrLoginHelper}
-
+                        chmod +x ${ecrLoginHelper}
+                        mv ${ecrLoginHelper} /usr/local/bin/
                         cd ${mainDir}
                         ./gradlew jib -Djib.to.image=${ecrUrl}/${repository}:${currentBuild.number} -Djib.console='plain'
                     """
